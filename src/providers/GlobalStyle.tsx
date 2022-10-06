@@ -1,27 +1,29 @@
 import { createGlobalStyle } from 'styled-components';
 
+import { colors } from '../constants/colors';
+
 import KanitLight from '../assets/fonts/Kanit-Light.ttf';
 import KanitRegular from '../assets/fonts/Kanit-Regular.ttf';
 import KanitMedium from '../assets/fonts/Kanit-Medium.ttf';
 
 export const GlobalStyle = createGlobalStyle`
   @font-face {
-    font-family: "Kanit";
-    src: url(${KanitLight}) format('ttf');
+    font-family: "Kanit Light";
+    src: local("Kanit-Light"), url(${KanitLight}) format('ttf');
     font-weight: 300;
     font-style: normal;
     font-display: swap;
   }
   @font-face {
-    font-family: "Kanit";
-    src: url(${KanitRegular}) format('ttf');
+    font-family: "Kanit Regular";
+    src: local("Kanit-Regular"), url(${KanitRegular}) format('ttf');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
   }
   @font-face {
-    font-family: "Kanit";
-    src: url(${KanitMedium}) format('ttf');
+    font-family: "Kanit Medium";
+    src: local("Kanit-Medium"), url(${KanitMedium}) format('ttf');
     font-weight: 500;
     font-style: normal;
     font-display: swap;
@@ -33,10 +35,10 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(180deg, #171717 1.77%, #2a2a2a 100%);
-    font-family: '"Kanit", sans-serif';
+    background: linear-gradient(180deg, ${colors.black['900']} 1.77%, ${colors.black['600']} 100%);
+    font-family: '"Kanit Light", sans-serif';
     font-size: 14px;
-    color: #d1d1d1;
+    color: ${colors.gray['500']};
     overscroll-behavior-y: none;
     overflow: hidden;
   }
