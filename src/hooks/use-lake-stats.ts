@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import { ASSET_LAKE } from '../constants/assets';
+import { USDC_LAKE_POOL_ADDRESS } from '../constants/blockchain';
 import { LakeStatsContext } from '../context';
-import { CoingeckoService } from '../services/coingecko-service';
 import { EtherscanService } from '../services/etherscan-service';
 import { parseBigNumber } from '../utils/parseBigNumber';
+import { useUniswap } from './use-uniswap';
 
 export type LakeStatsState = {
     marketCup: number;
@@ -17,13 +18,14 @@ export type LakeStatsState = {
 };
 
 const etherscanService = new EtherscanService();
-const coingeckoService = new CoingeckoService();
 
 export const useLakeStats = () => {
     const [currentTotalSupply, setCurrentTotalSupply] = useState(0);
     const [currentLakePrice, setCurrentLakePrice] = useState(0);
     const { marketCup, circulationSupply, lakePrice, consentsGathered } =
         useContext(LakeStatsContext);
+
+    const { getLakePrice } = useUniswap();
 
     useEffect(() => {
         (async () => {
@@ -36,9 +38,7 @@ export const useLakeStats = () => {
 
     useEffect(() => {
         (async () => {
-            const result = await coingeckoService.getERC20Price(
-                ASSET_LAKE.address,
-            );
+            const result = await getLakePrice(USDC_LAKE_POOL_ADDRESS);
             setCurrentLakePrice(result);
         })();
     }, []);

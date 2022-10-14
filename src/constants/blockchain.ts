@@ -1,1 +1,4 @@
 export const DEFAULT_ROUNDING = 8;
+
+export const USDC_LAKE_POOL_ADDRESS =
+    '0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8';

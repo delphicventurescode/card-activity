@@ -1,13 +1,21 @@
+// Should be replaced with Lake Token data (wETH data as example)
 export const ASSET_LAKE = {
-    name: 'Data Lake Token',
-    symbol: '$LAKE',
-    address: '0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5', // Should be replaced with Lake Token address (cETH address as example)
-    decimals: 8, // Should be replaced with Lake Token decimals (cETH decimals as example)
-    image: 'https://seeklogo.com/images/C/compound-ether-ceth-logo-1946B97AC4-seeklogo.com.png', // Should be replaced with Lake Token image (cETH image as example)
+    name: 'Wrapped Ether',
+    symbol: 'WETH',
+    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    decimals: 18,
+    image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/2396.png',
 };
 
 export const ASSET_ETH = {
     name: 'Ethereum',
     symbol: 'ETH',
     address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+};
+
+export const ASSET_USDC = {
+    name: 'USD Coin',
+    symbol: 'USDC',
+    address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    decimals: 6,
 };
