@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import logo from '../../../assets/icons/logo.svg';
 import { colors } from '../../../constants/colors';
@@ -9,6 +10,19 @@ interface Props {
 }
 
 export const Withdraw = ({ data }: Props) => {
+    const [totalLocked, setTotalLocked] = useState(0);
+    const [totalUnlocked, setTotalUnlocked] = useState(0);
+    useEffect(() => {
+        let locked = 0;
+        let unlocked = 0;
+        data.map((el) => {
+            locked = locked + el.allocatedAmount - el.unlockedAmount;
+            unlocked = unlocked + el.unlockedAmount;
+        });
+        setTotalLocked(locked);
+        setTotalUnlocked(unlocked);
+    }, []);
+
     const withdraw = () => {
         console.log('withdraw');
     };
@@ -20,8 +34,14 @@ export const Withdraw = ({ data }: Props) => {
             <div className="w-full flex flex-col items-center my-6">
                 <div className="flex flex-col text-gray-600">
                     <div>
-                        <span className="text-4xl tracking-[.1em]">900</span>
-                        <span className="tracking-[.1em]">.00</span>
+                        <span className="text-4xl tracking-[.1em]">
+                            {Math.trunc(totalLocked)}
+                        </span>
+                        <span className="tracking-[.1em]">
+                            {Math.abs(totalLocked - Math.trunc(totalLocked))
+                                .toFixed(2)
+                                .slice(1)}
+                        </span>
                     </div>
                     <span className="text-sm tracking-[.1em] mt-1">
                         TOTAL LOCKED
@@ -37,10 +57,14 @@ export const Withdraw = ({ data }: Props) => {
                     <div className="flex flex-col">
                         <div>
                             <span className="text-4xl tracking-[.1em] color-gradient">
-                                2700
+                                {Math.trunc(totalUnlocked)}
                             </span>
                             <span className="tracking-[.1em] color-gradient">
-                                .00
+                                {Math.abs(
+                                    totalUnlocked - Math.trunc(totalUnlocked),
+                                )
+                                    .toFixed(2)
+                                    .slice(1)}
                             </span>
                         </div>
                         <span className="text-sm tracking-[.1em] text-gray-600">
@@ -53,7 +77,7 @@ export const Withdraw = ({ data }: Props) => {
                 <GradientButton
                     size="small"
                     disabled={false}
-                    text="WITHDRAW 2700 LAKE"
+                    text={`WITHDRAW ${totalUnlocked} LAKE`}
                     onClick={withdraw}
                 />
             </div>
