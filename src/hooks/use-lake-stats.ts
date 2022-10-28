@@ -1,18 +1,19 @@
-import { JsonRpcProvider } from '@ethersproject/providers';
 import { ASSET_LAKE } from '../constants/assets';
-import { USDC_LAKE_POOL_ADDRESS } from '../constants/blockchain';
 import { EtherscanService } from '../services/etherscan-service';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { parseBigNumber } from '../utils/parseBigNumber';
+import { useConfig } from './use-config';
 import { useUniswap } from './use-uniswap';
 
 const etherscanService = new EtherscanService();
 
 export const useLakeStats = async (provider: JsonRpcProvider) => {
     const { getLakePrice } = useUniswap();
-    const lakePrice = await getLakePrice(USDC_LAKE_POOL_ADDRESS, provider);
+    const { lakeAddress } = useConfig();
+    const lakePrice = await getLakePrice(provider);
 
     const circulationSupply = parseBigNumber(
-        await etherscanService.getTotalSupply(ASSET_LAKE.address),
+        await etherscanService.getTotalSupply(lakeAddress),
         ASSET_LAKE.decimals,
     );
 

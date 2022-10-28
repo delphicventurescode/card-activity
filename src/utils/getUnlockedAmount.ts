@@ -1,4 +1,6 @@
-import { LAKE_TGE_TIMESTAMP } from '../constants/blockchain';
+import { useConfig } from '../hooks/use-config';
+
+const { lakeTgeTimestamp } = useConfig();
 
 export const getUnlockedAmount = (
     cliff: number,
@@ -7,7 +9,7 @@ export const getUnlockedAmount = (
 ) => {
     return (
         Math.floor(
-            (new Date().getTime() / 1000 - LAKE_TGE_TIMESTAMP - cliff) / terms,
+            (new Date().getTime() / 1000 - lakeTgeTimestamp - cliff) / terms,
         ) * vestingRate
     );
 };

@@ -1,4 +1,5 @@
 import { ASSET_ETH, ASSET_LAKE } from '../../constants/assets';
+import { useContext, useEffect } from 'react';
 
 import { Button } from '../button/Button';
 import { ButtonWithIcon } from '../button/ButtonWithIcon';
@@ -12,11 +13,32 @@ import { formatAddress } from '../../utils/formatAddress';
 import { formatValue } from '../../utils/formatValue';
 import horizontalLogo from './../../assets/icons/horizontal-logo.png';
 import keyIcon from './../../assets/icons/key-icon.svg';
-import { useContext } from 'react';
+import { useConfig } from '../../hooks/use-config';
 
 export const Navigation = () => {
-    const { account, ethBalance, tokenBalance, activateProvider, deactivate } =
-        useContext(WalletConnectContext);
+    const {
+        account,
+        provider,
+        ethBalance,
+        tokenBalance,
+        activateProvider,
+        deactivate,
+        switchNetwork,
+    } = useContext(WalletConnectContext);
+
+    const { chainId, chainIdAsHex } = useConfig();
+
+    useEffect(() => {
+        if (!account) {
+            activateProvider();
+        }
+    }, [account]);
+
+    useEffect(() => {
+        if (!!provider && provider.chainId !== chainIdAsHex) {
+            switchNetwork(chainId);
+        }
+    }, [provider]);
 
     const activate = async () => {
         await activateProvider();

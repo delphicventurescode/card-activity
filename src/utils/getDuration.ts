@@ -1,12 +1,14 @@
-import { LAKE_TGE_TIMESTAMP } from '../constants/blockchain';
 import { SEC_PER_DAY } from '../constants/commons';
+import { useConfig } from '../hooks/use-config';
+
+const { lakeTgeTimestamp } = useConfig();
 
 export const getDurationProgress = (
     cliff: number,
     duration: number,
 ): number => {
     return (
-        ((new Date().getTime() / 1000 - LAKE_TGE_TIMESTAMP) * 100) /
+        ((new Date().getTime() / 1000 - lakeTgeTimestamp) * 100) /
         (cliff + duration)
     );
 };
@@ -14,7 +16,7 @@ export const getDurationProgress = (
 export const getDurationLeft = (cliff: number, duration: number): number => {
     return (
         Math.floor(
-            (LAKE_TGE_TIMESTAMP +
+            (lakeTgeTimestamp +
                 cliff +
                 duration -
                 new Date().getTime() / 1000) /
@@ -24,5 +26,5 @@ export const getDurationLeft = (cliff: number, duration: number): number => {
 };
 
 export const isVestingScheduleUnlocked = (cliff: number, duration: number) => {
-    return LAKE_TGE_TIMESTAMP + cliff + duration < new Date().getTime() / 1000;
+    return lakeTgeTimestamp + cliff + duration < new Date().getTime() / 1000;
 };

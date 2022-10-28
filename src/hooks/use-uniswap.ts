@@ -1,10 +1,11 @@
-import { JsonRpcProvider } from '@ethersproject/providers';
+import { ASSET_LAKE, ASSET_USDC } from '../constants/assets';
 import { BigNumber, Contract } from 'ethers';
+
+import { abi as IUniswapV3PoolABI } from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { Pool } from '@uniswap/v3-sdk';
 import { Token } from '@uniswap/sdk-core';
-import { abi as IUniswapV3PoolABI } from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json';
-import { Mainnet } from '@usedapp/core';
-import { ASSET_LAKE, ASSET_USDC } from '../constants/assets';
+import { useConfig } from './use-config';
 
 interface Immutables {
     fee: number;
@@ -17,12 +18,12 @@ interface State {
 }
 
 export const useUniswap = () => {
-    const getLakePrice = async (
-        poolAddress: string,
-        provider: JsonRpcProvider,
-    ): Promise<number> => {
+    const { chainId, lakeAddress, usdcAddress, usdcLakePoolAddress } =
+        useConfig();
+
+    const getLakePrice = async (provider: JsonRpcProvider): Promise<number> => {
         const poolContract = new Contract(
-            poolAddress,
+            usdcLakePoolAddress,
             IUniswapV3PoolABI,
             provider,
         );
@@ -33,16 +34,16 @@ export const useUniswap = () => {
         ]);
 
         const usdc = new Token(
-            Mainnet.chainId,
-            ASSET_USDC.address,
+            chainId,
+            usdcAddress,
             ASSET_USDC.decimals,
             ASSET_USDC.symbol,
             ASSET_USDC.name,
         );
 
         const lake = new Token(
-            Mainnet.chainId,
-            ASSET_LAKE.address,
+            chainId,
+            lakeAddress,
             ASSET_LAKE.decimals,
             ASSET_LAKE.symbol,
             ASSET_LAKE.name,

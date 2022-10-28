@@ -1,16 +1,17 @@
 import { Contract } from 'ethers';
 import { IBeneficiaryOverview } from '../interfaces/beneficiaryOverview.interface';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { VESTING_SCHEDULE_ADDRESS } from '../constants/blockchain';
+import { useConfig } from './use-config';
 import { vestingScheduleAbi } from '../abis/vestingSchedule';
 
 export const useBeneficiaryOverview = () => {
+    const { vestingScheduleAddress } = useConfig();
     const getBeneficiaryOverview = async (
         provider: JsonRpcProvider,
         account: string,
     ): Promise<IBeneficiaryOverview[]> => {
         const vestingScheduleContract = new Contract(
-            VESTING_SCHEDULE_ADDRESS,
+            vestingScheduleAddress,
             vestingScheduleAbi,
             provider,
         );

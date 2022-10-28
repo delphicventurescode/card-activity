@@ -1,10 +1,12 @@
-import { useEthers, useEtherBalance, useTokenBalance } from '@usedapp/core';
-import { JsonRpcProvider } from '@ethersproject/providers';
-import Web3Modal from 'web3modal';
-import WalletConnectProvider from '@walletconnect/web3-provider/dist/umd/index.min.js';
-import { useEffect, useState } from 'react';
+import { useEtherBalance, useEthers, useTokenBalance } from '@usedapp/core';
+
 import { ASSET_LAKE } from '../constants/assets';
+import { JsonRpcProvider } from '@ethersproject/providers';
+import WalletConnectProvider from '@walletconnect/web3-provider/dist/umd/index.min.js';
+import Web3Modal from 'web3modal';
 import { parseBigNumber } from '../utils/parseBigNumber';
+import { useConfig } from './use-config';
+import { useState } from 'react';
 
 type InternalState = {
     loading: boolean;
@@ -20,6 +22,7 @@ export type WalletConnectState = {
     loading: boolean;
     active: boolean;
     account: string | undefined;
+    provider: any;
     ethBalance: number;
     tokenBalance: number;
     library: JsonRpcProvider | undefined;
@@ -27,11 +30,14 @@ export type WalletConnectState = {
     activateProvider: () => void;
     deactivate: () => void;
     activateBrowserWallet: () => void;
+    switchNetwork: (chainId: number) => void;
 };
 
 export const useWalletConnect = () => {
     const [internalState, setInternalState] =
         useState<InternalState>(initialState);
+
+    const [provider, setProvider] = useState();
 
     const {
         isLoading,
@@ -42,19 +48,13 @@ export const useWalletConnect = () => {
         activate,
         deactivate,
         activateBrowserWallet,
+        switchNetwork,
     } = useEthers();
 
-    useEffect(() => {
-        if (!active && !error) {
-            activateProvider();
-        }
-    }, []);
+    const { chainIdAsHex, lakeAddress } = useConfig();
 
     const ethBalanceAsBigNumber = useEtherBalance(account);
-    const tokenBalanceAsBigNumber = useTokenBalance(
-        ASSET_LAKE.address,
-        account,
-    );
+    const tokenBalanceAsBigNumber = useTokenBalance(lakeAddress, account);
 
     const getWeb3Modal = () => {
         const providerOptions = {
@@ -93,6 +93,14 @@ export const useWalletConnect = () => {
         try {
             const provider = await web3Modal.connect();
             await activate(provider);
+            setProvider(provider);
+
+            provider.on('chainChanged', async (chainId: string) => {
+                if (chainId !== chainIdAsHex) {
+                    handleDeactivate();
+                }
+            });
+
             setInternalState({
                 ...internalState,
                 error: null,
@@ -108,6 +116,7 @@ export const useWalletConnect = () => {
     };
 
     const handleDeactivate = () => {
+        setProvider(undefined);
         deactivate();
         getWeb3Modal().clearCachedProvider();
     };
@@ -116,6 +125,7 @@ export const useWalletConnect = () => {
         loading: internalState.loading || isLoading,
         active,
         account,
+        provider,
         ethBalance: ethBalanceAsBigNumber
             ? parseBigNumber(ethBalanceAsBigNumber)
             : 0,
@@ -127,5 +137,6 @@ export const useWalletConnect = () => {
         activateProvider,
         deactivate: handleDeactivate,
         activateBrowserWallet,
+        switchNetwork,
     };
 };

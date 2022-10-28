@@ -1,4 +1,4 @@
-import { DEFAULT_ROUNDING } from '../constants/blockchain';
+import { DEFAULT_ROUNDING } from '../constants/commons';
 
 export const getPrecision = (
     value: number,

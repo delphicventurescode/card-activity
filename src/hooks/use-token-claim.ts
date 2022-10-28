@@ -1,12 +1,13 @@
 import { Contract } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
-import { VESTING_SCHEDULE_ADDRESS } from '../constants/blockchain';
+import { useConfig } from './use-config';
 import { vestingScheduleAbi } from '../abis/vestingSchedule';
 
 export const useTokenClaim = () => {
+    const { vestingScheduleAddress } = useConfig();
     const claimAllTokens = async (signer: JsonRpcSigner): Promise<void> => {
         const vestingScheduleContract = new Contract(
-            VESTING_SCHEDULE_ADDRESS,
+            vestingScheduleAddress,
             vestingScheduleAbi,
             signer,
         );

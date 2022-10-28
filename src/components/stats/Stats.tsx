@@ -1,15 +1,17 @@
-import CopyToClipboard from 'react-copy-to-clipboard';
-import styled from 'styled-components';
-import { JsonRpcProvider } from '@ethersproject/providers';
-import metamaskIcon from './../../assets/icons/metamask-icon.svg';
-import { ASSET_LAKE } from '../../constants/assets';
-import { colors } from '../../constants/colors';
-import { GradientButtonWithIcon } from '../button/gradient/GradientButtonWithIcon';
-import { formatValue } from '../../utils/formatValue';
 import { useContext, useEffect, useState } from 'react';
+
+import { ASSET_LAKE } from '../../constants/assets';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import { GradientButtonWithIcon } from '../button/gradient/GradientButtonWithIcon';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { StatElement } from './StatElement';
-import { useLakeStats } from '../../hooks/use-lake-stats';
 import { WalletConnectContext } from '../../context';
+import { colors } from '../../constants/colors';
+import { formatValue } from '../../utils/formatValue';
+import metamaskIcon from './../../assets/icons/metamask-icon.svg';
+import styled from 'styled-components';
+import { useConfig } from '../../hooks/use-config';
+import { useLakeStats } from '../../hooks/use-lake-stats';
 
 export interface LakeStats {
     marketCup: number;
@@ -37,6 +39,7 @@ const REFRESH_STATS_INTERVAL = 180000;
 
 export const Stats = () => {
     const [lakeStats, setLakeStats] = useState<LakeStats>(zeroStats);
+    const { lakeAddress } = useConfig();
     const { library } = useContext(WalletConnectContext);
 
     useEffect(() => {
@@ -68,7 +71,7 @@ export const Stats = () => {
                 params: {
                     type: 'ERC20',
                     options: {
-                        address: ASSET_LAKE.address,
+                        address: lakeAddress,
                         symbol: ASSET_LAKE.symbol,
                         decimals: ASSET_LAKE.decimals,
                         image: ASSET_LAKE.image,
@@ -126,7 +129,7 @@ export const Stats = () => {
                     </GradientButtonWithIcon>
                 </div>
 
-                <CopyToClipboard text={ASSET_LAKE.address}>
+                <CopyToClipboard text={lakeAddress}>
                     <GradientBorder className="min-w-[14rem] h-[2.5rem] p-px flex justify-center items-center rounded-[32px] cursor-pointer">
                         <div className="w-full h-full flex justify-center items-center rounded-[32px] bg-black-500 px-4">
                             <span className="color-gradient-light tracking-wider text-xs font-medium font-kanit-medium">
