@@ -1,9 +1,16 @@
 import { Button } from '../../button/Button';
 import { GradientButton } from '../../button/gradient/GradientButton';
+import { ProvideLiquidityModal } from './ProvideLiquidityModal';
+import { useState } from 'react';
 
 export const ProvideLiquidityWidget = () => {
+    const [isPoolModalOpen, setIsPoolModalOpen] = useState(false);
     const onProvideLiquidityClick = () => {
-        console.log('Provide liquidity');
+        setIsPoolModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsPoolModalOpen(false);
     };
     const onLpTokenStakingClick = () => {
         console.log('LP TOKEN STAKING');
@@ -24,6 +31,10 @@ export const ProvideLiquidityWidget = () => {
                 <span className="text-sm tracking-[.1em] my-2">
                     2700 $LAKE AVAILABLE
                 </span>
+                <ProvideLiquidityModal
+                    isOpen={isPoolModalOpen}
+                    closeModal={closeModal}
+                />
             </div>
             <div className="w-full flex flex-col items-center mt-6">
                 <GradientButton
