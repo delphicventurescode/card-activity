@@ -80,12 +80,14 @@ export const ProvideLiquidityModal = ({ isOpen, closeModal }: Props) => {
         );
     };
 
-    const onUsdtValueChange = (event: any) => {
-        setUsdtInputValue(event.target.value);
+    const onUsdtValueChange = (value: number) => {
+        setUsdtInputValue(value);
+        setLakeInputValue((value * usdtPrice) / lakePrice);
     };
 
-    const onLakeValueChange = (event: any) => {
-        setLakeInputValue(event.target.value);
+    const onLakeValueChange = (value: number) => {
+        setLakeInputValue(value);
+        setUsdtInputValue((value * lakePrice) / usdtPrice);
     };
 
     const onApproveClick = () => {
@@ -124,18 +126,22 @@ export const ProvideLiquidityModal = ({ isOpen, closeModal }: Props) => {
                             tokenPrice={usdtPrice}
                             inputValue={usdtInputValue}
                             setMaxInputValue={() =>
-                                setUsdtInputValue(usdtBalance)
+                                onUsdtValueChange(usdtBalance)
                             }
-                            onChange={onUsdtValueChange}
+                            onChange={(event: any) =>
+                                onUsdtValueChange(event.target.value)
+                            }
                         />
                         <TokenInput
                             tokenSymbol="LAKE"
                             tokenPrice={lakePrice}
                             inputValue={lakeInputValue}
                             setMaxInputValue={() =>
-                                setLakeInputValue(lakeBalance)
+                                onLakeValueChange(lakeBalance)
                             }
-                            onChange={onLakeValueChange}
+                            onChange={(event: any) =>
+                                onLakeValueChange(event.target.value)
+                            }
                         />
                     </div>
                     <div className="flex flex-col mt-8 items-center">
