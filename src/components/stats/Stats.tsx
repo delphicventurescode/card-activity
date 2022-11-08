@@ -4,6 +4,7 @@ import { ASSET_LAKE } from '../../constants/assets';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { GradientButtonWithIcon } from '../button/gradient/GradientButtonWithIcon';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import { REFRESH_STATS_INTERVAL } from '../../constants/commons';
 import { StatElement } from './StatElement';
 import { WalletConnectContext } from '../../context';
 import { colors } from '../../constants/colors';
@@ -34,8 +35,6 @@ const zeroStats = {
     consentsGathered: 0,
     prevConsentsGathered: 0,
 };
-
-const REFRESH_STATS_INTERVAL = 180000;
 
 export const Stats = () => {
     const [lakeStats, setLakeStats] = useState<LakeStats>(zeroStats);

@@ -8,9 +8,9 @@ import { useUniswap } from './use-uniswap';
 const etherscanService = new EtherscanService();
 
 export const useLakeStats = async (provider: JsonRpcProvider) => {
-    const { getLakePrice } = useUniswap();
+    const { getLakePrice } = useUniswap(provider);
     const { lakeAddress } = useConfig();
-    const lakePrice = await getLakePrice(provider);
+    const lakePrice = await getLakePrice();
 
     const circulationSupply = parseBigNumber(
         await etherscanService.getTotalSupply(lakeAddress),
