@@ -10,6 +10,7 @@ import Slider from 'rc-slider';
 import { WalletConnectContext } from '../../../../context';
 import cancelIcon from '../../../../assets/icons/cancel-icon.svg';
 import { formatValue } from '../../../../utils/formatValue';
+import { useUnstakeLPTokens } from '../../../../hooks/use-unstake-lp-tokens';
 
 type Props = {
     isOpen: boolean;
@@ -49,7 +50,11 @@ export const UnstakingModal = ({
     const onUnstakeClick = async () => {
         if (library && account) {
             setIsUnstaking(true);
-            // Unstake
+            await useUnstakeLPTokens(
+                library,
+                account,
+                (inputValue * stakedBalance) / 100,
+            );
             setIsUnstaking(false);
             refreshStakingData();
         }

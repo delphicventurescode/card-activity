@@ -15,6 +15,7 @@ import { parseBigNumber } from '../../../utils/parseBigNumber';
 import { useConfig } from '../../../hooks/use-config';
 import { usePositionDetails } from '../../../hooks/use-position-details';
 import { usePositionId } from '../../../hooks/use-position-id';
+import { useStakedBalance } from '../../../hooks/use-staked-balance';
 import { useTokenBalance } from '@usedapp/core';
 import { useUniswap } from '../../../hooks/use-uniswap';
 
@@ -56,8 +57,7 @@ export const ProvideLiquidityWidget = () => {
 
     useEffect(() => {
         const fetchData = async (account: string, library: JsonRpcProvider) => {
-            // const stakedBalance = await useStakedBalance(library, account);
-            setStakedBalance(0);
+            setStakedBalance(await useStakedBalance(library, account));
         };
 
         if (library && account) {

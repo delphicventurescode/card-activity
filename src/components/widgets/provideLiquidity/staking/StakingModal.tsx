@@ -9,6 +9,7 @@ import { WalletConnectContext } from '../../../../context';
 import cancelIcon from '../../../../assets/icons/cancel-icon.svg';
 import { parseBigNumber } from '../../../../utils/parseBigNumber';
 import { useConfig } from '../../../../hooks/use-config';
+import { useStakeLPTokens } from '../../../../hooks/use-stake-lp-tokens';
 import { useTokenBalance } from '@usedapp/core';
 
 type Props = {
@@ -41,7 +42,7 @@ export const StakingModal = ({
     closeModal,
 }: Props) => {
     const { account, library } = useContext(WalletConnectContext);
-    const { lpTokenAddress, stakingAddress } = useConfig();
+    const { lpTokenAddress } = useConfig();
     const [lpTokenBalance, setLPTokenBalance] = useState(0);
     const [lpTokenInputValue, setLPTokenInputValue] = useState(0);
     const [isLPTokenValueValid, setIsLPTokenValueValid] = useState(true);
@@ -67,7 +68,7 @@ export const StakingModal = ({
     const onStakeClick = async () => {
         if (library && account) {
             setIsStaking(true);
-            // Stake
+            await useStakeLPTokens(library, account, lpTokenInputValue);
             setIsStaking(false);
             setLPTokenInputValue(0);
             refreshStakingData();
@@ -119,10 +120,7 @@ export const StakingModal = ({
                             ) : (
                                 <Button
                                     size="medium"
-                                    disabled={
-                                        lpTokenInputValue === 0 ||
-                                        !isLPTokenValueValid
-                                    }
+                                    disabled={lpTokenInputValue === 0}
                                     text="STAKE"
                                     onClick={onStakeClick}
                                 />
