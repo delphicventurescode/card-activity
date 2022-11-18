@@ -2,12 +2,11 @@ import { BigNumber, Contract } from 'ethers';
 
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Pool } from '@uniswap/v3-sdk';
-import { uniswapV3PoolAbi } from '../abis/uniswapV3Pool';
-import { useConfig } from './use-config';
 import { useLakeToken } from './use-lake-token';
+import { usePoolContract } from './use-pool-contract';
 import { useUsdtToken } from './use-usdt-token';
 
-interface Immutables {
+export interface Immutables {
     fee: number;
     tickSpacing: number;
 }
@@ -19,12 +18,7 @@ interface State {
 }
 
 export const useUniswapPool = async (provider: JsonRpcProvider) => {
-    const { usdtLakePoolAddress } = useConfig();
-    const poolContract = new Contract(
-        usdtLakePoolAddress,
-        uniswapV3PoolAbi,
-        provider,
-    );
+    const poolContract = usePoolContract(provider);
     const usdt = useUsdtToken();
     const lake = useLakeToken();
     const [immutables, state] = await Promise.all([
@@ -41,7 +35,7 @@ export const useUniswapPool = async (provider: JsonRpcProvider) => {
     );
 };
 
-const getPoolImmutables = async (
+export const getPoolImmutables = async (
     poolContract: Contract,
 ): Promise<Immutables> => {
     return {
@@ -50,7 +44,7 @@ const getPoolImmutables = async (
     };
 };
 
-const getPoolState = async (poolContract: Contract): Promise<State> => {
+export const getPoolState = async (poolContract: Contract): Promise<State> => {
     const [liquidity, slot] = await Promise.all([
         poolContract.liquidity(),
         poolContract.slot0(),

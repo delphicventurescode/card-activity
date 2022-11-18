@@ -6,6 +6,11 @@ import {
     MAX_TICK,
     REFRESH_LAKE_PRICE_INTERVAL,
 } from '../../../../constants/commons';
+import {
+    Immutables,
+    getPoolImmutables,
+    getPoolState,
+} from '../../../../hooks/use-uniswap-pool';
 import { useContext, useEffect, useState } from 'react';
 
 import { Button } from '../../../button/Button';
@@ -24,9 +29,11 @@ import { WalletConnectContext } from '../../../../context';
 import cancelIcon from './../../../../assets/icons/cancel-icon.svg';
 import { colors } from '../../../../constants/colors';
 import { customModalStyle } from '../../../../constants/modal';
+import { nearestUsableTick } from '@uniswap/v3-sdk';
 import { parseBigNumber } from '../../../../utils/parseBigNumber';
 import settingsIcon from './../../../../assets/icons/settings-icon.svg';
 import { useConfig } from '../../../../hooks/use-config';
+import { usePoolContract } from '../../../../hooks/use-pool-contract';
 import { useTokenAllowance } from '@usedapp/core';
 import { useUniswap } from '../../../../hooks/use-uniswap';
 
@@ -86,6 +93,10 @@ export const ProvideLiquidityModal = ({
         account,
         nonfungiblePositionManagerAddress,
     );
+    const [immutables, setImmutables] = useState<Immutables | undefined>(
+        undefined,
+    );
+    const [nearestTick, setNearestTick] = useState(0);
     const usdtPrice = 1;
     const [lakePrice, setLakePrice] = useState(0);
 
@@ -100,6 +111,21 @@ export const ProvideLiquidityModal = ({
             setInterval(() => {
                 fetchData(library).catch(console.error);
             }, REFRESH_LAKE_PRICE_INTERVAL);
+        }
+    }, [library]);
+
+    useEffect(() => {
+        const fetchData = async (poolContract: Contract) => {
+            const immutables = await getPoolImmutables(poolContract);
+            const state = await getPoolState(poolContract);
+            setImmutables(immutables);
+            setNearestTick(
+                nearestUsableTick(state.tick, immutables.tickSpacing),
+            );
+        };
+        if (library) {
+            const poolContract = usePoolContract(library);
+            fetchData(poolContract).catch(console.error);
         }
     }, [library]);
 
@@ -255,16 +281,40 @@ export const ProvideLiquidityModal = ({
                                 <Settings
                                     tickLower={tickLower}
                                     tickUpper={tickUpper}
+                                    nearestTick={nearestTick}
+                                    tickSpacing={immutables!.tickSpacing}
                                     slippageTolerance={slippageTolerance}
                                     transactionDeadline={transactionDeadline}
-                                    onLowerPriceChange={(event: any) => {
+                                    increaseTickLower={() => {
                                         setTickLower(
-                                            event.target.value || -MAX_TICK,
+                                            tickLower === -MAX_TICK
+                                                ? nearestTick -
+                                                      10 *
+                                                          immutables!
+                                                              .tickSpacing
+                                                : tickLower +
+                                                      immutables!.tickSpacing,
                                         );
                                     }}
-                                    onUpperPriceChange={(event: any) => {
+                                    decreaseTickLower={() => {
+                                        setTickLower(
+                                            tickLower - immutables!.tickSpacing,
+                                        );
+                                    }}
+                                    increaseTickUpper={() => {
                                         setTickUpper(
-                                            event.target.value || MAX_TICK,
+                                            tickUpper + immutables!.tickSpacing,
+                                        );
+                                    }}
+                                    decreaseTickUpper={() => {
+                                        setTickUpper(
+                                            tickUpper === MAX_TICK
+                                                ? nearestTick +
+                                                      10 *
+                                                          immutables!
+                                                              .tickSpacing
+                                                : tickUpper -
+                                                      immutables!.tickSpacing,
                                         );
                                     }}
                                     onSlippageToleranceChange={(event: any) => {
