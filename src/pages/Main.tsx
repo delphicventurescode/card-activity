@@ -8,6 +8,7 @@ import { Loading } from '../components/loading/Loading';
 import { Menu } from '../components/menu/Menu';
 import { Page } from '../components/page/Page';
 import { ProvideLiquidity } from '../components/subPages/ProvideLiquidity';
+import { SwapLake } from '../components/subPages/SwapLake';
 
 export const Main = () => {
     const [isDisclaimerAccepted, setIsDisclaimerAccepted] = useState(false);
@@ -35,6 +36,7 @@ export const Main = () => {
                         {subPageIndex === 0 && <Dashboard />}{' '}
                         {subPageIndex === 1 && <ProvideLiquidity />}
                         {subPageIndex === 2 && <BuyCrypto />}
+                        {subPageIndex === 3 && <SwapLake />}
                     </Page>
                     <div className="w-full lg:hidden fixed bottom-0 flex justify-center">
                         <Menu
