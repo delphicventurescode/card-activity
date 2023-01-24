@@ -1,4 +1,5 @@
 import { AccountOverview } from '../accountOverview/AccountOverview';
+import { Banner } from '../banner/Banner';
 import { Footer } from '../footer/Footer';
 import { Stats } from '../stats/Stats';
 import { VestingOverview } from '../vestingOverview/VestingOverview';
@@ -21,7 +22,10 @@ export const Dashboard = () => {
             <div className="w-full h-auto lg:h-[630px] mt-4 lg:mt-0 lg:py-6">
                 <VestingOverview />
             </div>
-            <div className="w-full h-[260px] mt-4 lg:pt-6 mb-6 lg:pb-10">
+            <div className="w-full h-auto lg:h-[120px] mt-4 lg:mt-0 lg:py-6">
+                <Banner />
+            </div>
+            <div className="w-full h-[260px] mt-4 lg:mt-0 lg:pt-6 mb-6 lg:pb-10">
                 <Footer />
             </div>
         </div>
