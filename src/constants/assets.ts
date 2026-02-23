@@ -4,7 +4,7 @@ export const ASSET_USDT: IAsset = {
     name: 'Tether USD',
     symbol: 'USDT',
     decimals: 6,
-};
+}; 
 
 export const ASSET_LAKE: IAsset = {
     name: 'Data Lake Token',
